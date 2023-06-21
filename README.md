@@ -5,7 +5,7 @@ Essentially [VBCat](https://github.com/MidwintersTomb/VBCat), with a bit of an u
 
 ## Usage:
 ```
-Usage: VBCat.exe <mode> [options]
+Usage: VBCat2.exe <mode> [options]
 
 Modes:
 
